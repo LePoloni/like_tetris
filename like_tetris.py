@@ -35,7 +35,7 @@ class like_tetris(neopixel.NeoPixel):
                 return xy[0] + xy[1]*self.colunas
             #Se é linha ímpar (avança da dir. p/ esq.)
             else:
-                return colunas-1-xy[0] + xy[1]*self.colunas
+                return self.colunas-1-xy[0] + xy[1]*self.colunas
         
         elif self.tipo_matriz == "t_coluna":
             return xy[0]*self.linhas + xy[1]

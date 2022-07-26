@@ -15,10 +15,10 @@ botaoEsq = Pin(34, Pin.IN, Pin.PULL_UP) #Pull-up interno não funcionou
 botaoDir = Pin(21, Pin.IN, Pin.PULL_UP)
 botaoRot = Pin(25, Pin.IN, Pin.PULL_UP)
 
-linhas = 14     #O objeto canvas no Wokwi só funciona com linhas pares
+linhas = 15     #O objeto canvas no Wokwi só funciona com linhas pares
 colunas = 10    #O objeto canvas no Wokwi só funciona com linhas pares
 posicao = (0,0)
-tt = like_tetris(machine.Pin(4), colunas, linhas, "t_linha")
+tt = like_tetris(machine.Pin(4), colunas, linhas, "t_linha_zig_zag")
 tt.fill((0,0,0))
 while True:
     #Teste 1 - Desloca um pixel dentre os pontos de origem e destino por tempo
@@ -156,56 +156,58 @@ while True:
     #'''
     #Teste 10 - Mover um bloco por botões
     #'''
-    cor_fundo = (0,255,255)
+    cor_fundo = (0,0,0)
     tt.limpa_matriz(cor_fundo)
-    bloco = tt.cria_bloco([5,0],1,(255,0,0))
-    if tt.testa_ocupacao(bloco, (0,0,0)) == False:
-        tt.desenha_bloco(bloco)
-        time.sleep_ms(1000)
-    estado = True
-    while estado == True:
-        #Novo movimento
-        estado, bloco = tt.movimento_completo(bloco, cor_fundo)
-        
-        if botaoEsq.value() == 0:
-            print('botaoEsq = 0')   #Pull-up interno não funcionou
-            #Apaga o bloco
-            tt.apaga_bloco(bloco, (0,0,0))
-            #Desloca
-            bloco = tt.desloca_bloco(bloco, [-1,0])
-            #Faz ajuste de posição (testa se o bloco ficou partido em duas partes após
-            #rotacionar ou deslocar)
-            bloco = tt.ajusta_posicao_bloco(bloco)
-            #Desenha o bloco
+    
+    while True:
+        bloco = tt.cria_bloco([5,0],1,(255,0,0))
+        if tt.testa_ocupacao(bloco, (0,0,0)) == False:
             tt.desenha_bloco(bloco)
-        
-        if botaoDir.value() == 0:
-            print('botaoDir = 0')
-            #Apaga o bloco
-            tt.apaga_bloco(bloco, (0,0,0))
-            #Desloca
-            bloco = tt.desloca_bloco(bloco, [1,0])
-            #Faz ajuste de posição (testa se o bloco ficou partido em duas partes após
-            #rotacionar ou deslocar)
-            bloco = tt.ajusta_posicao_bloco(bloco)
-            #Desenha o bloco
-            tt.desenha_bloco(bloco)
-        
-        if botaoRot.value() == 0:
-            print('botaoRot = 0')
-            #Apaga o bloco
-            tt.apaga_bloco(bloco, (0,0,0))
-            #Rotaciona o bloco
-            bloco = tt.rotaciona_bloco(bloco)
-            #Faz ajuste de posição (testa se o bloco ficou partido em duas partes após
-            #rotacionar ou deslocar)
-            bloco_aux = tt.ajusta_posicao_bloco(bloco)
-            #Desenha o bloco
-            #tt.desenha_bloco(bloco) #Bloco original
-            tt.desenha_bloco(bloco_aux) #Bloco ajustado
-        
-        time.sleep_ms(300)
-    print('Fim')
+            time.sleep_ms(1000)
+        estado = True
+        while estado == True:
+            #Novo movimento
+            estado, bloco = tt.movimento_completo(bloco, cor_fundo)
+            
+            if botaoEsq.value() == 0:
+                print('botaoEsq = 0')   #Pull-up interno não funcionou
+                #Apaga o bloco
+                tt.apaga_bloco(bloco, (0,0,0))
+                #Desloca
+                bloco = tt.desloca_bloco(bloco, [-1,0])
+                #Faz ajuste de posição (testa se o bloco ficou partido em duas partes após
+                #rotacionar ou deslocar)
+                bloco = tt.ajusta_posicao_bloco(bloco)
+                #Desenha o bloco
+                tt.desenha_bloco(bloco)
+            
+            if botaoDir.value() == 0:
+                print('botaoDir = 0')
+                #Apaga o bloco
+                tt.apaga_bloco(bloco, (0,0,0))
+                #Desloca
+                bloco = tt.desloca_bloco(bloco, [1,0])
+                #Faz ajuste de posição (testa se o bloco ficou partido em duas partes após
+                #rotacionar ou deslocar)
+                bloco = tt.ajusta_posicao_bloco(bloco)
+                #Desenha o bloco
+                tt.desenha_bloco(bloco)
+            
+            if botaoRot.value() == 0:
+                print('botaoRot = 0')
+                #Apaga o bloco
+                tt.apaga_bloco(bloco, (0,0,0))
+                #Rotaciona o bloco
+                bloco = tt.rotaciona_bloco(bloco)
+                #Faz ajuste de posição (testa se o bloco ficou partido em duas partes após
+                #rotacionar ou deslocar)
+                bloco_aux = tt.ajusta_posicao_bloco(bloco)
+                #Desenha o bloco
+                #tt.desenha_bloco(bloco) #Bloco original
+                tt.desenha_bloco(bloco_aux) #Bloco ajustado
+            
+            time.sleep_ms(500)
+        print('Fim')
     while True:
         time.sleep_ms(500)
     #'''    
