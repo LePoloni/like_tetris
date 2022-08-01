@@ -8,6 +8,7 @@
 
 import time
 import machine
+import sys
 from like_tetris import like_tetris
 from machine import Pin
 
@@ -80,19 +81,25 @@ while True:
     #'''
     #Teste 6 - Testa deslocamento e ocupação de posição manual
     '''
-    bloco = tt.cria_bloco([0,0],0,(255,0,0))
+    bloco = tt.cria_bloco([0,0],2,(255,255,0))
     if tt.testa_ocupacao(bloco, (0,0,0)) == False:
         tt.desenha_bloco(bloco)
-    time.sleep_ms(1000)
+        time.sleep_ms(1000)
+    else:
+        print('FIM')
+        sys.exit()
     while True:
         #Desloca
         bloco2 = tt.desloca_bloco(bloco, [0,1])
+        
         print('bloco =', bloco)
         print('bloco2 =', bloco2)
+        
+        #Apaga bloco1
+        tt.apaga_bloco(bloco, (0,0,0))
+        
         #Testa
         if tt.testa_ocupacao(bloco2, (0,0,0)) == False:
-            #Apaga bloco1
-            tt.apaga_bloco(bloco, (0,0,0))
             #Desenha bloco2
             tt.desenha_bloco(bloco2)
             #Atualiza bloco
@@ -100,11 +107,13 @@ while True:
             #Atraso
             time.sleep_ms(200)
         else:
-            break
+            #Desenha bloco1 novamente
+            tt.desenha_bloco(bloco)            
+            break        
     #'''
     #Teste 7 - Testa deslocamento e ocupação de posição por método
     '''
-    bloco = tt.cria_bloco([0,0],0,(255,0,0))
+    bloco = tt.cria_bloco([0,0],1,(255,0,0))
     if tt.testa_ocupacao(bloco, (0,0,0)) == False:
         tt.desenha_bloco(bloco)
     time.sleep_ms(500)
@@ -160,7 +169,7 @@ while True:
     tt.limpa_matriz(cor_fundo)
     
     while True:
-        bloco = tt.cria_bloco([5,0],1,(255,0,0))
+        bloco = tt.cria_bloco([5,0],1,(255,255,0))
         if tt.testa_ocupacao(bloco, (0,0,0)) == False:
             tt.desenha_bloco(bloco)
             time.sleep_ms(1000)
