@@ -526,3 +526,57 @@ class like_tetris(neopixel.NeoPixel):
                 #time.sleep_ms(1000)
         #Retorna o bloco ajustado
         return self.bloco_aj
+    
+    #Verifica se uma linha foi preenchida. Em caso positivo apaga seu
+    #conteúdo de desloca as demais para baixo
+    def testa_preenchimento_linha(self, cor_fundo):
+        #Varre as linhas da última para primeira
+        l = self.linhas - 1
+        while l >= 0:
+        
+            print('>>>> l =',l)    
+            
+            #1-Verifica se a linha está preenchida
+            igual = True
+            for c in range(self.colunas):
+                #Se uma dos pixel for igual a cor do fundo
+                if neopixel.NeoPixel.__getitem__(self, self.num_pixel([c,l])) == cor_fundo:
+                    #A linha não está preenchida
+                    igual = False
+            #2-Se a linha está preenchida
+            if igual == True:
+                #3-Apaga a linha
+                for c in range(self.colunas):
+                                                        #posição pixel         cor
+                    neopixel.NeoPixel.__setitem__(self, self.num_pixel([c,l]), cor_fundo)
+                #Atualiza a matriz
+                neopixel.NeoPixel.write(self)
+                time.sleep_ms(300)
+                
+                #4-Desloca o conteúdo das linhas anteriores um linha para baixo
+                #Salva o valor da linha atual
+                l_igual = l                
+                #Ajusta todas as linhas anteriores
+                while l_igual > 0:
+                    
+                    print('>>>> l_igual =',l_igual)
+                    
+                    for c in range(self.colunas):
+                        #Lê a cor da linha anterior
+                        cor_pixel_linha_anterior = neopixel.NeoPixel.__getitem__(self, self.num_pixel([c,l_igual-1]))
+                        #Salva a cor na linha atual
+                        neopixel.NeoPixel.__setitem__(self, self.num_pixel([c,l_igual]), cor_pixel_linha_anterior)
+                    l_igual -= 1
+                #Preenche a linha 0 com a cor de fundo
+                for c in range(self.colunas):
+                                                        #posição pixel         cor
+                    neopixel.NeoPixel.__setitem__(self, self.num_pixel([c,0]), cor_fundo)
+                #Atualiza a matriz
+                neopixel.NeoPixel.write(self)
+                time.sleep_ms(300)
+                
+                #5-Após deslocar todas é linhas é preciso voltar e testar a linha atual novamente,
+                #porque a linha anterior que foi deslocada também pode ter sido preenchida
+                l += 1
+            #6-Decrementa uma linha (vai para próxima linha)
+            l -= 1

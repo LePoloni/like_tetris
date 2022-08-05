@@ -17,7 +17,7 @@ botaoEsq = Pin(34, Pin.IN, Pin.PULL_UP) #Pull-up interno não funcionou
 botaoDir = Pin(21, Pin.IN, Pin.PULL_UP)
 botaoRot = Pin(25, Pin.IN, Pin.PULL_UP)
 
-linhas = 14     #O objeto canvas só funciona com linhas pares
+linhas = 15     #O objeto canvas só funciona com linhas pares
 colunas = 10    #O objeto canvas só funciona com linhas pares
 posicao = (0,0)
 
@@ -390,7 +390,7 @@ class like_tetris(neopixel.NeoPixel):
 
     #Tenta deslocar um bloco uma linha para baixo
     def movimento_completo(self, bloco, cor_fundo):
-        print('bloco =', bloco)
+        print('>>>>>>>>>>>>bloco =', bloco)
 
         #Se não chegou na última linha
         if (bloco[0][1] >= self.linhas) \
@@ -404,7 +404,7 @@ class like_tetris(neopixel.NeoPixel):
         #Desloca y+1
         self.bloco2 = self.desloca_bloco(bloco, [0,1])
         
-        print('bloco2 =', self.bloco2)
+        print('>>>>>>>>>>>>bloco2 =', self.bloco2)
         
         #Apaga bloco1
         self.apaga_bloco(bloco, cor_fundo)
@@ -533,8 +533,63 @@ class like_tetris(neopixel.NeoPixel):
                 #time.sleep_ms(1000)
         #Retorna o bloco ajustado
         return self.bloco_aj
+    
+    #Verifica se uma linha foi preenchida. Em caso positivo apaga seu
+    #conteúdo de desloca as demais para baixo
+    def testa_preenchimento_linha(self, cor_fundo):
+        #Varre as linhas da última para primeira
+        l = self.linhas - 1
+        while l >= 0:
+        
+            print('>>>> l =',l)    
+            
+            #1-Verifica se a linha está preenchida
+            igual = True
+            for c in range(self.colunas):
+                #Se uma dos pixel for igual a cor do fundo
+                if neopixel.NeoPixel.__getitem__(self, self.num_pixel([c,l])) == cor_fundo:
+                    #A linha não está preenchida
+                    igual = False
+            #2-Se a linha está preenchida
+            if igual == True:
+                #3-Apaga a linha
+                for c in range(self.colunas):
+                                                        #posição pixel         cor
+                    neopixel.NeoPixel.__setitem__(self, self.num_pixel([c,l]), cor_fundo)
+                #Atualiza a matriz
+                neopixel.NeoPixel.write(self)
+                time.sleep_ms(300)
+                
+                #4-Desloca o conteúdo das linhas anteriores um linha para baixo
+                #Salva o valor da linha atual
+                l_igual = l                
+                #Ajusta todas as linhas anteriores
+                while l_igual > 0:
+                    
+                    print('>>>> l_igual =',l_igual)
+                    
+                    for c in range(self.colunas):
+                        #Lê a cor da linha anterior
+                        cor_pixel_linha_anterior = neopixel.NeoPixel.__getitem__(self, self.num_pixel([c,l_igual-1]))
+                        #Salva a cor na linha atual
+                        neopixel.NeoPixel.__setitem__(self, self.num_pixel([c,l_igual]), cor_pixel_linha_anterior)
+                    l_igual -= 1
+                #Preenche a linha 0 com a cor de fundo
+                for c in range(self.colunas):
+                                                        #posição pixel         cor
+                    neopixel.NeoPixel.__setitem__(self, self.num_pixel([c,0]), cor_fundo)
+                #Atualiza a matriz
+                neopixel.NeoPixel.write(self)
+                time.sleep_ms(300)
+                
+                #5-Após deslocar todas é linhas é preciso voltar e testar a linha atual novamente,
+                #porque a linha anterior que foi deslocada também pode ter sido preenchida
+                l += 1
+            #6-Decrementa uma linha (vai para próxima linha)
+            l -= 1
 
-tt = like_tetris(machine.Pin(4), colunas, linhas, "t_linha")
+
+tt = like_tetris(machine.Pin(4), colunas, linhas, "t_linha_zig_zag")
 tt.fill((0,0,0))
 while True:
     #Teste 1 - Desloca um pixel dentre os pontos de origem e destino por tempo
@@ -732,4 +787,116 @@ while True:
     print('Fim')
     while True:
         time.sleep_ms(500)
+    #'''
+    #Teste 11 - Mover um bloco por botões, novo ajuste
     #'''    
+    cor_fundo = (0,0,0)
+    tt.limpa_matriz(cor_fundo)
+    
+    #Pré-ocupa algumas linhas parcialmente
+    bloco = tt.cria_bloco([0,14],0,(15,15,0))
+    tt.desenha_bloco(bloco)
+    bloco = tt.cria_bloco([0,13],0,(15,15,0))
+    tt.desenha_bloco(bloco)
+    bloco = tt.cria_bloco([0,12],0,(15,15,0))
+    tt.desenha_bloco(bloco)
+    bloco = tt.cria_bloco([6,14],0,(15,15,0))
+    tt.desenha_bloco(bloco)
+    bloco = tt.cria_bloco([6,13],0,(15,15,0))
+    tt.desenha_bloco(bloco)
+    bloco = tt.cria_bloco([6,12],0,(15,15,0))
+    tt.desenha_bloco(bloco)    
+    
+    while True:
+        #1-Cria um novo bloco
+        bloco = tt.cria_bloco([5,0],0,(15,15,0))
+        
+        #2-Teste se a posição já está ocupada
+        if tt.testa_ocupacao(bloco, (0,0,0)) == False:
+            tt.desenha_bloco(bloco)
+            time.sleep_ms(1000)
+        else:
+            print('FIM DO JOGO')
+            sys.exit()            
+        
+        #3-Inicia um loop de descida do bloco
+        estado = True
+        while estado == True:
+            
+            #Debug - mostra o bloca a ser movido
+            print('bloco a ser movido =', bloco)
+            
+            #Novo movimento
+            estado, bloco = tt.movimento_completo(bloco, cor_fundo)
+            
+            #Atraso entre um novo movimento
+            time.sleep_ms(500)
+            
+            #Testa se o movimento foi possível
+            if estado == False:
+                break #Interrompe o laço
+            
+            #Testa os botões            
+            
+            #Botão esquerdo
+            if botaoEsq.value() == 0:
+                print('botaoEsq = 0')   #Pull-up interno não funcionou
+                #Apaga o bloco
+                tt.apaga_bloco(bloco, (0,0,0))
+                #Desloca
+                bloco2 = tt.desloca_bloco(bloco, [-1,0])
+                #Faz ajuste de posição (testa se o bloco ficou partido em duas partes após
+                #rotacionar ou deslocar)
+                bloco2 = tt.ajusta_posicao_bloco(bloco2)
+                #Testa
+                if tt.testa_ocupacao(bloco2, cor_fundo) == False:
+                    #Desenha bloco2
+                    tt.desenha_bloco(bloco2)
+                    #Atualiza o bloco1
+                    bloco = bloco2
+                else:
+                    #Desenha bloco1
+                    tt.desenha_bloco(bloco)
+            
+            #Botão esquerdo        
+            if botaoDir.value() == 0:
+                print('botaoDir = 0')
+                #Apaga o bloco
+                tt.apaga_bloco(bloco, (0,0,0))
+                #Desloca
+                bloco2 = tt.desloca_bloco(bloco, [+1,0])
+                #Faz ajuste de posição (testa se o bloco ficou partido em duas partes após
+                #rotacionar ou deslocar)
+                bloco2 = tt.ajusta_posicao_bloco(bloco2)
+                #Testa
+                if tt.testa_ocupacao(bloco2, cor_fundo) == False:
+                    #Desenha bloco2
+                    tt.desenha_bloco(bloco2)
+                    #Atualiza o bloco1
+                    bloco = bloco2
+                else:
+                    #Desenha bloco1
+                    tt.desenha_bloco(bloco)
+            
+            #Botão de rotação
+            if botaoRot.value() == 0:
+                print('botaoRot = 0')
+                #Apaga o bloco
+                tt.apaga_bloco(bloco, (0,0,0))
+                #Rotaciona o bloco
+                bloco2 = tt.rotaciona_bloco(bloco)
+                #Faz ajuste de posição (testa se o bloco ficou partido em duas partes após
+                #rotacionar ou deslocar)
+                bloco2 = tt.ajusta_posicao_bloco(bloco2)
+                #Testa
+                if tt.testa_ocupacao(bloco2, cor_fundo) == False:
+                    #Desenha bloco2
+                    tt.desenha_bloco(bloco2)
+                    #Atualiza o bloco1
+                    bloco = bloco2
+                else:
+                    #Desenha bloco1
+                    tt.desenha_bloco(bloco)
+        
+        #4-Verifica o preenchimento de linhas
+        tt.testa_preenchimento_linha(cor_fundo)
