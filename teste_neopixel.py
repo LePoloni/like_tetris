@@ -7,7 +7,9 @@
 #Tetris online: https://tetris.com/play-tetris
 
 import time
-import machine, neopixel
+import machine
+import neopixel
+
 
 from machine import Pin
 
@@ -203,7 +205,10 @@ def desloca2(offset, cor_fundo, cor_pixel, tempo):
     return desloca(posicao, destino, cor_fundo, cor_pixel, tempo)
 
 while True:
+    #Teste 0 - Roda o demonstração
+    '''
     demo(np)
+    #'''
     #Teste 1 - Preenche linhas e colunas com delay
     '''
     teste_linhas_colunas(colunas, linhas)
@@ -226,3 +231,19 @@ while True:
     posicao = (2,10)
     desloca2((3, 0), (255,255,255), (255,0,0), 100)
     #'''
+    #Teste 5 - Um pixel
+    #'''
+    #Cria um pixel
+    np1p = neopixel.NeoPixel(machine.Pin(4), 1)
+    #Limpa a cor
+    np1p.fill((0,0,0))
+    #Escreve um cor
+    np1p[0] = (0xAA,0x0F,0xF0) #RGB
+    while True:
+        #Atualiza o pixel
+        np1p.write();
+        time.sleep_ms(1000);
+        print('loop')
+        
+        
+        
