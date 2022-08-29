@@ -79,7 +79,9 @@ class like_tetris(neopixel.NeoPixel):
         if self.mdeltax > self.mdeltay:
             if self.ox < self.dx:
                 while self.ox <= self.dx:
-                    self.pixel = self.ox + self.oy*self.colunas
+                    #self.pixel = self.ox + self.oy*self.colunas
+                    self.pixel = self.num_pixel((self.ox, self.oy))
+                    
                     neopixel.NeoPixel.__setitem__(self, self.pixel, cor_pixel)
                     neopixel.NeoPixel.write(self)
                     time.sleep_ms(tempo)
@@ -91,7 +93,9 @@ class like_tetris(neopixel.NeoPixel):
                 self.ox = self.ox - 1
             else:
                 while self.ox >= self.dx:
-                    self.pixel = self.ox + self.oy*self.colunas
+                    #self.pixel = self.ox + self.oy*self.colunas
+                    self.pixel = self.num_pixel((self.ox, self.oy))
+                    
                     neopixel.NeoPixel.__setitem__(self, self.pixel, cor_pixel)
                     neopixel.NeoPixel.write(self)
                     time.sleep_ms(tempo)
@@ -104,7 +108,9 @@ class like_tetris(neopixel.NeoPixel):
         else:
             if self.oy < self.dy:
                 while self.oy <= self.dy:
-                    self.pixel = self.ox + self.oy*colunas
+                    #self.pixel = self.ox + self.oy*self.colunas
+                    self.pixel = self.num_pixel((self.ox, self.oy))
+                    
                     neopixel.NeoPixel.__setitem__(self, self.pixel, cor_pixel)
                     neopixel.NeoPixel.write(self)
                     time.sleep_ms(tempo)
@@ -116,7 +122,9 @@ class like_tetris(neopixel.NeoPixel):
                 self.oy = self.oy - 1
             else:
                 while self.oy >= self.dy:
-                    self.pixel = self.ox + self.oy*self.colunas
+                    #self.pixel = self.ox + self.oy*self.colunas
+                    self.pixel = self.num_pixel((self.ox, self.oy))
+                    
                     neopixel.NeoPixel.__setitem__(self, self.pixel, cor_pixel)
                     neopixel.NeoPixel.write(self)
                     time.sleep_ms(tempo)
