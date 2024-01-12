@@ -171,7 +171,8 @@ class like_tetris(neopixel.NeoPixel):
             self.mdeltay = self.deltay
         
         #Desenha o pixel na origem
-        self.pixel = self.ox + self.oy*self.colunas
+        #self.pixel = self.ox + self.oy*self.colunas
+        self.pixel = self.num_pixel((self.ox, self.oy))
         neopixel.NeoPixel.__setitem__(self, self.pixel, cor_pixel)
         neopixel.NeoPixel.write(self)
         time.sleep_ms(tempo)
@@ -192,7 +193,8 @@ class like_tetris(neopixel.NeoPixel):
                     elif self.oy > self.dy:
                         self.oy = self.oy - 1
                     #Calcula o número do pixel
-                    self.pixel = self.ox + self.oy*self.colunas
+                    #self.pixel = self.ox + self.oy*self.colunas
+                    self.pixel = self.num_pixel((self.ox, self.oy))
                     #Desenha o pixel na nova posição
                     neopixel.NeoPixel.__setitem__(self, self.pixel, cor_pixel)
                     neopixel.NeoPixel.write(self)
@@ -211,7 +213,8 @@ class like_tetris(neopixel.NeoPixel):
                     elif self.oy > self.dy:
                         self.oy = self.oy-1
                     #Calcula o número do pixel
-                    self.pixel = self.ox + self.oy*self.colunas
+                    #self.pixel = self.ox + self.oy*self.colunas
+                    self.pixel = self.num_pixel((self.ox, self.oy))
                     #Desenha o pixel na nova posição
                     neopixel.NeoPixel.__setitem__(self, self.pixel, cor_pixel)
                     neopixel.NeoPixel.write(self)
@@ -231,7 +234,8 @@ class like_tetris(neopixel.NeoPixel):
                     elif self.ox > self.dx:
                         self.ox = self.ox-1
                     
-                    self.pixel = self.ox + self.oy*self.colunas
+                    #self.pixel = self.ox + self.oy*self.colunas
+                    self.pixel = self.num_pixel((self.ox, self.oy))
 
                     neopixel.NeoPixel.__setitem__(self, self.pixel, cor_pixel)
                     neopixel.NeoPixel.write(self)
@@ -248,7 +252,8 @@ class like_tetris(neopixel.NeoPixel):
                     elif self.ox > self.dx:
                         self.ox = self.ox-1
 
-                    self.pixel = self.ox + self.oy*self.colunas
+                    #self.pixel = self.ox + self.oy*self.colunas
+                    self.pixel = self.num_pixel((self.ox, self.oy))
                     
                     neopixel.NeoPixel.__setitem__(self, self.pixel, cor_pixel)
                     neopixel.NeoPixel.write(self)

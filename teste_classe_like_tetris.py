@@ -291,7 +291,7 @@ while True:
                     #Desenha bloco1
                     tt.desenha_bloco(bloco)
             
-            #Botão esquerdo        
+            #Botão direito        
             if botaoDir.value() == 0:
                 print('botaoDir = 0')
                 #Apaga o bloco
@@ -334,7 +334,7 @@ while True:
         #4-Verifica o preenchimento de linhas
         tt.testa_preenchimento_linha(cor_fundo)
     #'''
-    #Teste 12 - Mover um bloco por botões com sorteio de tipo e cor
+    #Teste 12 - Tetris completo - move bloco por botões com sorteio de tipo e cor
     #'''    
     cor_fundo = (0,0,0)
     #cor_fundo = (20,50,20)
@@ -414,7 +414,7 @@ while True:
                     #Desenha bloco1
                     tt.desenha_bloco(bloco)
             
-            #Botão esquerdo        
+            #Botão direito        
             if botaoDir.value() == 0:
                 print('botaoDir = 0')
                 #Apaga o bloco
